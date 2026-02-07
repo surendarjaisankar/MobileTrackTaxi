@@ -14,36 +14,41 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      toast.error('Enter email and password')
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.message)
-      }
-
-      localStorage.setItem('token', data.token)
-
-      toast.success('Login successful')
-      router.push('/dashboard')
-    } catch (error: any) {
-      toast.error(error.message)
-    }
-
-    setLoading(false)
+  if (!email || !password) {
+    toast.error('Enter email and password')
+    return
   }
+
+  setLoading(true)
+
+  try {
+    const API =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5000'
+        : process.env.BACKEND_URL
+    const res = await fetch(`${API}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Login failed')
+    }
+
+    localStorage.setItem('token', data.token)
+
+    toast.success('Login successful')
+    router.push('/dashboard')
+  } catch (error: any) {
+    toast.error(error.message || 'Something went wrong')
+  }
+
+  setLoading(false)
+}
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950">
