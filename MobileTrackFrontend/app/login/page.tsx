@@ -25,7 +25,7 @@ export default function LoginPage() {
     const API =
       process.env.NODE_ENV === 'development'
         ? 'http://localhost:5000'
-        : process.env.BACKEND_URL
+        : process.env.NEXT_PUBLIC_API_URL
     const res = await fetch(`${API}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
